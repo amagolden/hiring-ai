@@ -2,57 +2,28 @@ import React, { useState } from 'react';
 
 const Response = ({ response, loading  }) => {  
 
+  //function to download the response as CSV
   const downloadCSV = () => {
     if (!response || Object.keys(response).length === 0) {
-      alert("No strategic plan available to download!");
+      alert("No hiring plan available to download!");
       return;
     }
   
     const csvRows = [];
   
-    // Add the header row
-    csvRows.push("Section,Objective/Strategy/KPI,Key Result/Detail,Timeline");
-  
-    // Check if response is an object before proceeding
-    if (typeof response === "object" && response !== null) {
-      // Process the response object
-      for (const [section, items] of Object.entries(response)) {
-        if (!items) {
-          console.error(`Section ${section} is undefined or null.`);
-          continue; // Skip sections with no data
-        }
-  
-        if (Array.isArray(items)) {
-          // If the section is an array (e.g., Goals, Strategies, KPIs)
-          items.forEach((item) => {
-            if (section === "Goals" && item?.Goal && item?.Objective) {
-              csvRows.push(
-                `${section},${item.Goal || "N/A"}: ${item.Objective || "N/A"},N/A,N/A`
-              );
-            }
-            // Check for Strategies
-            else if (section === "Strategies" && item?.Strategy) {
-              csvRows.push(
-                `${section},${item.Strategy || "N/A"},N/A,N/A`
-              );
-            }
-            // Check for KPIs
-            else if (section === "KPIs" && item?.Metric) {
-              csvRows.push(
-                `${section},${item.Metric || "N/A"}: ${item.Target || "N/A"},N/A,N/A`
-              );
-            } else {
-              console.log(`Unexpected item structure for section "${section}":`, item);
-            }
-          });
-        } else {
-          // If the section is not an array (e.g., Vision Statement or Mission Statement)
-          csvRows.push(`${section},${items || "N/A"},N/A,N/A`);
-        }
+    csvRows.push("Section,Details"); // Header row
+
+    // Process each key in the response object
+    for (const [section, content] of Object.entries(response)) {
+      if (Array.isArray(content)) {
+        // If the value is an array (e.g., responsibilities, qualifications)
+        content.forEach((item) => {
+          csvRows.push(`${section},"${item}"`);
+        });
+      } else {
+        // Handle direct string values (e.g., summary, salary_range)
+        csvRows.push(`${section},"${content}"`);
       }
-    } else {
-      console.error("Response is not a valid object.");
-      return;
     }
   
     // Combine rows into CSV content
@@ -63,115 +34,51 @@ const Response = ({ response, loading  }) => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = "strategic_plan.csv";
+    link.download = "role_description.csv";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
+  // Render individual sections based on their structure
   const renderSection = (key, value) => {
     if (Array.isArray(value)) {
-      // Handle array values (e.g., "Strategies", "KPIs", "Goals")
       return (
-        <div>
+        <ul className="list-disc pl-5">
           {value.map((item, index) => (
-            <div
-              key={`${key}-${index}`}
-              className="bg-white rounded-lg shadow-md p-4 border border-gray-200 space-y-2"
-            >
-              {Object.entries(item).map(([subKey, subValue]) => (
-                <p key={subKey} className="text-sm text-gray-800">
-                  <strong>{subKey}:</strong> {subValue}
-                </p>
-              ))}
-            </div>
+            <li key={index} className="text-sm text-gray-800">
+              {item}
+            </li>
           ))}
-        </div>
+        </ul>
       );
-    } else if (typeof value === "object" && value !== null) {
-      // Handle nested objects (unlikely based on your example)
-      return Object.entries(value).map(([subKey, subValue]) => (
-        <div key={subKey} className="bg-gray-50 rounded-lg shadow p-4 space-y-2">
-          <h4 className="font-semibold">{subKey}</h4>
-          <p className="text-sm">
-            {typeof subValue === "object" ? (
-              renderSection(subKey, subValue)
-            ) : (
-              subValue
-            )}
-          </p>
-        </div>
-      ));
-    } else {
-      // Handle direct text values (e.g., "Vision Statement", "Mission Statement")
-      return (
-        <p className="text-sm text-gray-800">
-          <strong>{key}:</strong> {value}
-        </p>
-      );
+    } else if (typeof value === "string") {
+      return <p className="text-sm text-gray-800">{value}</p>;
     }
+    return null;
   };
-  
-  /*if (loading) return <p>Loading...</p>;
-
-  if (!response) {
-    return <p>No response received yet. Please try again.</p>;
-  }
-
-  if (typeof response === "string") {
-    return (
-      <div>
-        <h3>Raw Response</h3>
-        <pre>{response}</pre>
-      </div>
-    );
-  }
-
-  if (typeof response === "object") {
-    return (
-      <div>
-        {Object.entries(response).map(([key, value]) => (
-          <div key={key}>
-            <h3 className="text-lg font-semibold">{key}</h3>
-            {Array.isArray(value) ? (
-              <ul>
-                {value.map((item, index) => (
-                  <li key={index}>{JSON.stringify(item)}</li>
-                ))}
-              </ul>
-            ) : (
-              <p>{value}</p>
-            )}
-          </div>
-        ))}
-      </div>
-    );
-  }
-
-  return <p>Unexpected response format.</p>;
-};*/
 
   return (
     <div className="border-b border-gray-900/10 pb-6">
-      <h3 className="text-lg font-semibold text-gray-900">Strategic Plan</h3>
+      <h3 className="text-lg font-semibold text-gray-900">Role Description</h3>
       
       {loading ? (
         <p>Loading...</p>
       ) : (
         <div className="space-y-4">
-
-        {Object.entries(response).map(([key, value]) => (
-          <div
-            key={key}
-            className="bg-gray-100 rounded-lg shadow-md p-6 space-y-4"
-          >
-            <h3 className="text-lg font-semibold text-indigo-600">
-              {key}
-            </h3>
-            {renderSection(key, value)}
+          {response && typeof response === "object" ? (
+            Object.entries(response).map(([key, value]) => (
+              <div key={key} className="bg-gray-100 rounded-lg shadow-md p-6">
+                <h3 className="text-lg font-semibold text-indigo-600">
+                  {key.replace(/_/g, " ")} {/* Format key names */}
+                </h3>
+                {renderSection(key, value)}
+              </div>
+            ))
+          ) : (
+            <p>No response available. Please generate a role.</p>
+          )}
           </div>
-        ))}
-        </div>
       )}
       <button
         onClick={downloadCSV}

@@ -4,19 +4,19 @@ const features = [
   {
     name: 'Save for the future',
     description:
-      'Easily save your strategy to revisit on a quarterly basis.',
+      'Easily save your roles to post on job boards or share with your team.',
     icon: CloudArrowUpIcon,
   },
   {
     name: 'Generate new ideas',
     description:
-      'Generate new ideas based on your needs and inspire additional brainstorming in team offsites.',
+      'Generate new roles based on your needs and inspire additional brainstorming for future growth.',
     icon: ArrowPathIcon,
   },
   {
     name: 'Custom to your needs',
     description:
-      'Customize your strategy based on your industry, function, market trends, and current challenges.',
+      'Customize your hiring plan based on your industry, function, market trends, and current challenges.',
     icon: FingerPrintIcon,
   },
   {
@@ -34,10 +34,10 @@ export default function Content() {
         <div className="mx-auto max-w-2xl lg:text-center">
           <h2 className="text-base/7 font-semibold text-indigo-600">Execute faster</h2>
           <p className="mt-2 text-pretty text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl lg:text-balance">
-            Strategic planning made easy
+            Hiring & onboarding made easy
           </p>
           <p className="mt-6 text-lg/8 text-gray-600">
-            We offer simple-to-use strategic planning based on your team's needs. We save you time so you can focus on getting things done.
+            We offer simple-to-use hiring tools based on your team's needs. We save you time so you can focus on getting things done.
           </p>
         </div>
         <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-4xl">
