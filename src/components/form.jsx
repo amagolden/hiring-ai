@@ -27,7 +27,6 @@ export default function HiringForm() {
             "Summary": "string", // Brief overview of the role
             "Responsibilities": ["string"], // List of key responsibilities
             "Qualifications": ["string"], // List of required qualifications
-            "Benefits": ["string"], // List of benefits offered
             "Salary Range": "string" // Optional
           }`;
           
