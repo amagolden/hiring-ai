@@ -10,6 +10,8 @@ export default function HiringForm() {
     const [skillsRequired, setSkillsRequired] = useState('');
     const [workType, setWorkType] = useState('');
     const [location, setLocation] = useState('');
+    const [culture, setCulture] = useState('');
+    const [company, setCompany] = useState('');
 
     const fetchOpenAiResponse = async () => {
 
@@ -21,13 +23,16 @@ export default function HiringForm() {
           Skills Required: "${skillsRequired}"
           Work Type: "${workType}"
           Work Location: "${location}"
+          Team Culture: "${culture}"
+          Company: "${company}"
 
           The response should be structured like a standard job description including job responsibilities and qualifications. Use this format:
           {
-            "Summary": "string", // Brief overview of the role
-            "Responsibilities": ["string"], // List of key responsibilities
-            "Qualifications": ["string"], // List of required qualifications
-            "Salary Range": "string" // Optional
+            "Summary": "string", // Brief overview of the role including at least 3 sentences
+            "Team Culture": "string", // Brief description of team culture including at least 3 sentences
+            "Responsibilities": ["string"], // List of at least 5 key responsibilities
+            "Qualifications": ["string"], // List of at least 5 required qualifications
+            "Salary Range": "string" // Optional, formatted as dollar amount
           }`;
           
         setLoading(true);
@@ -112,6 +117,28 @@ export default function HiringForm() {
                       className="mt-2 w-full rounded-md border border-gray-300 p-2 focus:ring-indigo-600"
                       onChange={(e) => setRoleDescription(e.target.value)}
                   ></textarea>
+              </div>
+
+              <div className="border-b border-gray-900/10 pb-6">
+                  <h3 className="text-lg font-semibold text-gray-900">Company</h3>
+                  <input
+                      type="text"
+                      name="companyName"
+                      placeholder="Name of the hiring company"
+                      className="mt-2 w-full rounded-md border border-gray-300 p-2 focus:ring-indigo-600"
+                      onChange={(e) => setCompany(e.target.value)}
+                  ></input>
+              </div>
+
+              <div className="border-b border-gray-900/10 pb-6">
+                  <h3 className="text-lg font-semibold text-gray-900">Culture</h3>
+                  <input
+                      type="text"
+                      name="teamCulture"
+                      placeholder="Briefly describe the culture of the team & company"
+                      className="mt-2 w-full rounded-md border border-gray-300 p-2 focus:ring-indigo-600"
+                      onChange={(e) => setCulture(e.target.value)}
+                  ></input>
               </div>
 
               <div className="border-b border-gray-900/10 pb-6">
