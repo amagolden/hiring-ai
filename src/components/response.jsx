@@ -1,44 +1,65 @@
 import React, { useState } from 'react';
+import jsPDF from 'jspdf';
 
 const Response = ({ response, loading  }) => {  
 
-  //function to download the response as CSV
-  const downloadCSV = () => {
+  // Function to download the response as PDF
+  const downloadPDF = () => {
     if (!response || Object.keys(response).length === 0) {
       alert("No hiring plan available to download!");
       return;
     }
   
-    const csvRows = [];
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.width;
+    const margin = 10; // Margin for left and right
+    const maxWidth = pageWidth - margin * 2; // Max width for text
+    let y = 10; // Starting vertical offset
   
-    csvRows.push("Section,Details"); // Header row
-
-    // Process each key in the response object
+    // Title
+    doc.setFontSize(16);
+    doc.text("Role Description", margin, y);
+    y += 10; // Add space after title
+  
+    // Add each section to the PDF
     for (const [section, content] of Object.entries(response)) {
+      doc.setFontSize(14);
+      doc.setTextColor(100, 149, 237); // Indigo color for section headers
+      doc.text(section.replace(/_/g, " "), margin, y);
+      y += 10;
+  
+      doc.setFontSize(12);
+      doc.setTextColor(0); // Black for content
+  
       if (Array.isArray(content)) {
-        // If the value is an array (e.g., responsibilities, qualifications)
         content.forEach((item) => {
-          csvRows.push(`${section},"${item}"`);
+          const lines = doc.splitTextToSize(`- ${item}`, maxWidth); // Split text to fit
+          lines.forEach((line) => {
+            doc.text(line, margin + 5, y); // Add slight indent for list items
+            y += 7; // Line spacing
+          });
         });
-      } else {
-        // Handle direct string values (e.g., summary, salary_range)
-        csvRows.push(`${section},"${content}"`);
+      } else if (typeof content === "string") {
+        const lines = doc.splitTextToSize(content, maxWidth); // Split text to fit
+        lines.forEach((line) => {
+          doc.text(line, margin, y);
+          y += 7; // Line spacing
+        });
+      }
+  
+      y += 5; // Add some space between sections
+  
+      // Check if the content will go off the page
+      if (y > doc.internal.pageSize.height - margin) {
+        doc.addPage(); // Add a new page
+        y = margin; // Reset vertical offset
       }
     }
   
-    // Combine rows into CSV content
-    const csvContent = csvRows.join("\n");
-  
-    // Create a Blob and trigger download
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "role_description.csv";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // Save the PDF
+    doc.save("role_description.pdf");
   };
+  
 
   // Render individual sections based on their structure
   const renderSection = (key, value) => {
@@ -81,10 +102,10 @@ const Response = ({ response, loading  }) => {
           </div>
       )}
       <button
-        onClick={downloadCSV}
+        onClick={downloadPDF}
         className="rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
       >
-        Download as CSV
+        Download as PDF
       </button>
     </div>
   );
