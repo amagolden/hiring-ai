@@ -22,6 +22,7 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
+import { useAuth } from "react-oidc-context";
 
 /*const products = [
   { name: 'Analytics', description: 'Get a better understanding of your traffic', href: '#', icon: ChartPieIcon },
@@ -37,6 +38,36 @@ const callsToAction = [
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    
+  const auth = useAuth();
+  
+  const signOutRedirect = () => {
+    const clientId = "1513sbr2ve9bpo04ed8gbq7v0c";
+    const logoutUri = "https://main.d7u73iuo8vn2u.amplifyapp.com/";
+    const cognitoDomain = "https://us-east-2ugbgydcn7.auth.us-east-2.amazoncognito.com";
+    window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(logoutUri)}`;
+  };
+
+  if (auth.isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (auth.error) {
+    return <div>Encountering error... {auth.error.message}</div>;
+  }
+
+  if (auth.isAuthenticated) {
+    return (
+      <div>
+        <pre> Hello: {auth.user?.profile.email} </pre>
+        <pre> ID Token: {auth.user?.id_token} </pre>
+        <pre> Access Token: {auth.user?.access_token} </pre>
+        <pre> Refresh Token: {auth.user?.refresh_token} </pre>
+
+        <button onClick={() => auth.removeUser()}>Sign out</button>
+      </div>
+    );
+  }
 
   return (
     <header className="bg-white">
@@ -114,9 +145,13 @@ export default function Header() {
           </a>
         </PopoverGroup>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <a href="#" className="text-sm/6 font-semibold text-gray-900">
+          {/*<a href="#" className="text-sm/6 font-semibold text-gray-900">
             Log in <span aria-hidden="true">&rarr;</span>
-          </a>
+          </a>*/}
+          <div className="text-sm/6 font-semibold text-gray-900">
+            {!auth.isAuthenticated ? <button onClick={() => auth.signinRedirect()}>Sign in</button> :
+            <button onClick={() => signOutRedirect()}>Sign out</button>}
+          </div>
         </div>
       </nav>
       <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
@@ -179,7 +214,10 @@ export default function Header() {
                   href="#"
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
                 >
-                  Log in
+                  <div>
+                    <button onClick={() => auth.signinRedirect()}>Sign in</button>
+                    <button onClick={() => signOutRedirect()}>Sign out</button>
+                  </div>
                 </a>
               </div>
             </div>

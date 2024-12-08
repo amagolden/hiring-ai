@@ -11,9 +11,11 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.7",
     "jspdf": "^2.5.2",
+    "oidc-client-ts": "^3.1.0",
     "openai": "^4.72.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-oidc-context": "^3.2.0",
     "react-router-dom": "^6.28.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
