@@ -140,9 +140,9 @@ export default function Header() {
           <a href="/" className="text-sm/6 font-semibold text-gray-900">
             Features
           </a>
-          <a href="/product" className="text-sm/6 font-semibold text-gray-900">
+          {auth.isAuthenticated ? <a href="/product" className="text-sm/6 font-semibold text-gray-900">
             Product
-          </a>
+          </a> : "" }
         </PopoverGroup>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           {/*<a href="#" className="text-sm/6 font-semibold text-gray-900">
