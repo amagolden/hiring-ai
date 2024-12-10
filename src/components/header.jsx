@@ -57,7 +57,7 @@ export default function Header() {
   }
 
   if (auth.isAuthenticated) {
-    return (
+    return ({console.log(
       <div>
         <pre> Hello: {auth.user?.profile.email} </pre>
         <pre> ID Token: {auth.user?.id_token} </pre>
@@ -66,7 +66,7 @@ export default function Header() {
 
         <button onClick={() => auth.removeUser()}>Sign out</button>
       </div>
-    );
+    );)}
   }
 
   return (
