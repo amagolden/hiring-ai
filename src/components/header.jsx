@@ -56,8 +56,8 @@ export default function Header() {
     return <div>Encountering error... {auth.error.message}</div>;
   }
 
-  if (auth.isAuthenticated) {
-    return ({console.log(
+  {/*if (auth.isAuthenticated) {
+    return (
       <div>
         <pre> Hello: {auth.user?.profile.email} </pre>
         <pre> ID Token: {auth.user?.id_token} </pre>
@@ -66,8 +66,8 @@ export default function Header() {
 
         <button onClick={() => auth.removeUser()}>Sign out</button>
       </div>
-    );)}
-  }
+    );
+  }*/}
 
   return (
     <header className="bg-white">
