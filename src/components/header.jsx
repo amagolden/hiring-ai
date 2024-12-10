@@ -150,10 +150,7 @@ export default function Header() {
           </a>*/}
           <div className="text-sm/6 font-semibold text-gray-900">
             {!auth.isAuthenticated ? <button onClick={() => auth.signinRedirect()}>Sign in</button> :
-            <button onClick={() => {
-              auth.removeUser()
-              signOutRedirect()}
-              }>Sign out</button>}
+            <button onClick={() => auth.removeUser()}>Sign out</button>}
           </div>
         </div>
       </nav>
